@@ -1,9 +1,14 @@
 from fastapi import FastAPI
 
-app = FastAPI(title="Electronic Library API") #создает объект под приложение. Точка входа
+from app.api.routes.authors import router as authors_router
 
-@app.get("/health") #запрос на работоспособность сервера
-async def health(): 
+# создает объект под приложение. Точка входа
+app = FastAPI(title="Electronic Library API")
+
+
+@app.get("/health")  # запрос на работоспособность сервера
+async def health():
     return {"status": "ok"}
 
 
+app.include_router(authors_router)
