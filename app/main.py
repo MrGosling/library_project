@@ -11,4 +11,5 @@ async def health():
     return {"status": "ok"}
 
 
+# Добавление роутера по Автору
 app.include_router(authors_router)
