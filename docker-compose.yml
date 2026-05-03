@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:16-alpine
-    container_name: library_db
+    container_name: ${POSTGRES_HOST}
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
