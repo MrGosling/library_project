@@ -11,6 +11,9 @@ router = APIRouter()
 
 
 def author_or_404(author: Author | None) -> Author:
+    """
+    Helper: Возвращает автора или ошибку 404.
+    """
     if author is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -30,6 +33,9 @@ async def create_author(
     author_data: AuthorCreate,
     session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Создает автора.
+    """
     author = Author(**author_data.model_dump())
 
     session.add(author)
@@ -50,6 +56,9 @@ async def get_authors(
     offset: int = Query(default=0, ge=0),
     session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Возвращает список авторов.
+    """
     statement = select(Author)
 
     if search:
@@ -71,6 +80,9 @@ async def get_author(
     author_id: int,
     session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Возвращает автора по идентификатору (id).
+    """
     author = await session.get(Author, author_id)
 
     return author_or_404(author)
@@ -86,6 +98,9 @@ async def update_author(
     author_data: AuthorUpdate,
     session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Обновляет информацию об авторе.
+    """
     author = await session.get(Author, author_id)
     author = author_or_404(author)
 
@@ -109,6 +124,9 @@ async def delete_author(
     author_id: int,
     session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Удаляет автора по идентификатору (id).
+    """
     author = await session.get(Author, author_id)
     author = author_or_404(author)
 
