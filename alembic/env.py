@@ -80,6 +80,8 @@ from alembic import context
 from app.core.db import Base
 from app.models.author import Author
 from app.models.user import User
+from app.models.genre import Genre
+from app.models.category import Category
 
 load_dotenv('.env')
 
