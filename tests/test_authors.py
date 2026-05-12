@@ -1,11 +1,11 @@
 from datetime import date, datetime, timezone
 
 import pytest
+from app.api.v1.api import api_router
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
-from app.api.v1.api import api_router
 from app.core.db import get_async_session
 from app.models.author import Author
 from app.schemas.author import AuthorCreate, AuthorUpdate
