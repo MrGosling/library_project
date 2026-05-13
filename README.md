@@ -9,18 +9,18 @@ Docker и Docker Compose должны быть установлены.
 ## Установка и запуск
 
 Клонируйте репозиторий и перейдите в папку проекта:
-```
-git clone <ссылка на репозиторий>
+```bash
+git clone git@github.com:MrGosling/library_project.git
 cd library_project
 ```
 
 Создайте файл `.env` на основе примера:
-```
+```bash
 cp .env.example .env
 ```
 
 Запустите проект:
-```
+```bash
 docker compose up --build
 ```
 
@@ -28,6 +28,39 @@ docker compose up --build
 
 Сервер будет доступен по адресу: http://localhost:8000
 
+## API Эндпоинты
+
+Базовый URL: `http://localhost:8000/api/v1`
+
+### Google Books
+- `GET /google_books` — Поиск книг в Google Books.
+  - Параметры: `query` (строка поиска).
+
+### Авторы (Authors)
+- `GET /authors` — Список авторов. Поддерживает фильтрацию `search`, а также `limit` и `offset`.
+- `GET /authors/{author_id}` — Получение информации об авторе по ID.
+- `POST /authors` — Создание нового автора.
+- `PATCH /authors/{author_id}` — Обновление информации об авторе.
+- `DELETE /authors/{author_id}` — Удаление автора.
+
+### Категории (Categories)
+- `GET /categories/` — Список всех категорий.
+- `GET /categories/{category_id}` — Получение категории по ID.
+- `POST /categories/` — Создание новой категории.
+- `DELETE /categories/{category_id}` — Удаление категории.
+
+### Жанры (Genres)
+- `GET /genres/` — Список всех жанров.
+- `GET /genres/{genre_id}` — Получение жанра по ID.
+- `POST /genres/` — Создание нового жанра.
+- `DELETE /genres/{genre_id}` — Удаление жанра.
+
+### Пользователи (Users)
+- `GET /users/` — Список всех пользователей.
+- `GET /users/{user_id}` — Получение пользователя по ID.
+
+### Служебные
+- `GET /health` — Проверка работоспособности API.
 
 ## Зависимости
 
