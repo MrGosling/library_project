@@ -82,6 +82,8 @@ from app.models.author import Author
 from app.models.user import User
 from app.models.genre import Genre
 from app.models.category import Category
+from app.models.review import Review
+from app.models.favorite import Favorite
 
 load_dotenv('.env')
 
