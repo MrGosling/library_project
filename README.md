@@ -28,6 +28,21 @@ docker compose up --build
 
 Сервер будет доступен по адресу: http://localhost:8000
 
+
+##  Регистрация и авторизация
+
+### Регистрация нового пользователя
+Отправьте `POST` запрос на `/api/v1/users/register` с телом:
+
+```json
+{
+  "username": "ivanov",
+  "email": "ivanov@example.com",
+  "password": "strongpassword",
+  "first_name": "Иван",
+  "last_name": "Иванов"
+}
+
 ## API Эндпоинты
 
 Базовый URL: `http://localhost:8000/api/v1`
