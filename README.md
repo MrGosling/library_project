@@ -34,7 +34,7 @@ docker compose up --build
 ### Регистрация нового пользователя
 Отправьте `POST` запрос на `/api/v1/users/register` с телом:
 
-```json
+```bash
 {
   "username": "ivanov",
   "email": "ivanov@example.com",
@@ -43,7 +43,11 @@ docker compose up --build
   "last_name": "Иванов"
 }
 ```
-
+### Авторизация 
+Для аутентификации используется JWT. Отправьте POST-запрос с username и password на /api/v1/users/login.
+```bash
+curl -X POST "http://localhost:8000/api/v1/users/login?username=reader1&password=securepassword"
+```
 
 ## API Эндпоинты
 
