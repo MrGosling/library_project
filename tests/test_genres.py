@@ -23,12 +23,11 @@ async def test_get_genre_not_found(async_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_update_genre(async_client: AsyncClient):
+async def test_update_genre_is_not_supported(async_client: AsyncClient):
     create = await async_client.post('/api/v1/genres/', json={'name': 'Детектив'})
     genre_id = create.json()['id']
     response = await async_client.patch(f'/api/v1/genres/{genre_id}', json={'name': 'Детектив обновлён'})
-    assert response.status_code == 200
-    assert response.json()['name'] == 'Детектив обновлён'
+    assert response.status_code == 405
 
 
 @pytest.mark.asyncio

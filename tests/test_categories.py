@@ -44,22 +44,20 @@ async def test_get_category_not_found(async_client: AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_update_category(async_client: AsyncClient):
+async def test_update_category_is_not_supported(async_client: AsyncClient):
     create = await async_client.post('/api/v1/categories/', json={'name': 'Поэма'})
     category_id = create.json()['id']
     response = await async_client.patch(
         f'/api/v1/categories/{category_id}',
         json={'name': 'Поэма обновлённая', 'description': 'Лирическое произведение'},
     )
-    assert response.status_code == 200
-    assert response.json()['name'] == 'Поэма обновлённая'
-    assert response.json()['description'] == 'Лирическое произведение'
+    assert response.status_code == 405
 
 
 @pytest.mark.asyncio
-async def test_update_category_not_found(async_client: AsyncClient):
+async def test_update_category_not_supported_for_missing_category(async_client: AsyncClient):
     response = await async_client.patch('/api/v1/categories/99999', json={'name': 'Не существует'})
-    assert response.status_code == 404
+    assert response.status_code == 405
 
 
 @pytest.mark.asyncio

@@ -6,7 +6,7 @@ from app.core.db import get_async_session
 from app.models.category import Category
 from app.schemas.category import CategoryCreate, CategoryRead
 
-router = APIRouter(prefix='/categories', tags=['Categories'])
+router = APIRouter()
 
 
 async def get_category_or_404(

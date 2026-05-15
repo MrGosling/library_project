@@ -6,7 +6,7 @@ from app.core.db import get_async_session
 from app.models.genre import Genre
 from app.schemas.genre import GenreCreate, GenreRead
 
-router = APIRouter(prefix='/genres', tags=['Genres'])
+router = APIRouter()
 
 
 async def get_genre_or_404(

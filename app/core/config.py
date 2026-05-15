@@ -21,6 +21,10 @@ class Settings(BaseSettings):
     google_books_api_url: str | None = 'GOOGLE_BOOKS_API_URL'
     google_books_api_key: str | None = 'GOOGLE_BOOKS_API_KEY'
 
+    ollama_base_url: str = 'http://ollama:11434'
+    ollama_model: str = 'qwen2.5:3b'
+    ollama_timeout: float = 60.0
+
     model_config: SettingsConfigDict = {'env_file': '.env', 'env_file_encoding': 'utf-8', 'extra': 'ignore'}
 
 
