@@ -14,6 +14,26 @@ class UserCreate(UserBase):
     password: str
 
 
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = 'bearer'
+
+
+class ChangePassword(BaseModel):
+    username: str
+    old_password: str
+    new_password: str
+
+
+class RefreshToken(BaseModel):
+    token: str
+
+
 class UserRead(UserBase):
     id: int
     is_active: bool

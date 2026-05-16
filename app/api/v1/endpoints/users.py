@@ -3,9 +3,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
-from app.core.security import hash_password
+from app.core.security import hash_password, verify_password
 from app.models.user import User
-from app.schemas.user import UserCreate, UserRead
+from app.schemas.user import UserCreate, UserLogin, UserRead, TokenResponse, ChangePassword, RefreshToken
 
 router = APIRouter()
 
@@ -39,3 +39,56 @@ async def register(
     await session.commit()
     await session.refresh(user)
     return user
+
+
+@router.post('/login', response_model=TokenResponse, summary='Вход пользователя')
+async def login(
+    user_in: UserLogin,
+    session: AsyncSession = Depends(get_async_session),
+) -> TokenResponse:
+    result = await session.execute(select(User).where(User.username == user_in.username))
+    user = result.scalar_one_or_none()
+    if user is None or not verify_password(user_in.password, user.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Invalid username or password',
+        )
+    return TokenResponse(access_token=f'token_{user.id}')
+
+
+@router.post('/change-password', response_model=UserRead, summary='Смена пароля')
+async def change_password(
+    data: ChangePassword,
+    session: AsyncSession = Depends(get_async_session),
+) -> User:
+    result = await session.execute(select(User).where(User.username == data.username))
+    user = result.scalar_one_or_none()
+    if user is None or not verify_password(data.old_password, user.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Invalid username or password',
+        )
+    user.password = hash_password(data.new_password)
+    await session.commit()
+    await session.refresh(user)
+    return user
+
+
+@router.post('/refresh-token', response_model=TokenResponse, summary='Обновление токена')
+async def refresh_token(
+    data: RefreshToken,
+    session: AsyncSession = Depends(get_async_session),
+) -> TokenResponse:
+    if not data.token.startswith('token_'):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Invalid token',
+        )
+    user_id = data.token.replace('token_', '')
+    user = await session.get(User, int(user_id))
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail='Invalid token',
+        )
+    return TokenResponse(access_token=f'token_{user.id}')
