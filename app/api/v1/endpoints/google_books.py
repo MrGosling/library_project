@@ -12,7 +12,9 @@ router = APIRouter()
     summary='Поиск книг в Google Books',
     description='Позволяет искать книги через Google Books API по заданной строке запроса.',
 )
-async def search_google_books(query: str = Query(..., description='Строка запроса для поиска книг')) -> dict[str, Any]:
+async def search_google_books(
+    query: str = Query(..., description='Строка запроса для поиска книг'),
+) -> dict[str, Any]:
     """
     Поиск книг с использованием Google Books API.
     """

@@ -25,7 +25,11 @@ class Settings(BaseSettings):
     ollama_model: str = 'qwen2.5:3b'
     ollama_timeout: float = 60.0
 
-    model_config: SettingsConfigDict = {'env_file': '.env', 'env_file_encoding': 'utf-8', 'extra': 'ignore'}
+    model_config: SettingsConfigDict = {
+        'env_file': '.env',
+        'env_file_encoding': 'utf-8',
+        'extra': 'ignore',
+    }
 
 
 @lru_cache

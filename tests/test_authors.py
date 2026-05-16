@@ -49,7 +49,9 @@ class FakeAuthorSession:
         return FakeResult(self.authors)
 
     async def get(self, model, author_id: int) -> Author | None:
-        return next((author for author in self.authors if author.id == author_id), None)
+        return next(
+            (author for author in self.authors if author.id == author_id), None
+        )
 
     def add(self, author: Author) -> None:
         author.id = max(existing.id for existing in self.authors) + 1
@@ -123,7 +125,9 @@ def test_get_author_returns_404_for_missing_author(client: TestClient) -> None:
     assert response.json() == {'detail': 'Автор не найден'}
 
 
-def test_create_author(client: TestClient, fake_session: FakeAuthorSession) -> None:
+def test_create_author(
+    client: TestClient, fake_session: FakeAuthorSession
+) -> None:
     response = client.post(
         '/api/v1/authors',
         json={
@@ -143,7 +147,9 @@ def test_update_author_accepts_partial_payload(
     client: TestClient,
     fake_session: FakeAuthorSession,
 ) -> None:
-    response = client.patch('/api/v1/authors/1', json={'bio': 'Обновленная биография'})
+    response = client.patch(
+        '/api/v1/authors/1', json={'bio': 'Обновленная биография'}
+    )
 
     assert response.status_code == 200
     assert response.json()['bio'] == 'Обновленная биография'
@@ -151,14 +157,18 @@ def test_update_author_accepts_partial_payload(
     assert fake_session.commits == 1
 
 
-def test_update_author_returns_404_for_missing_author(client: TestClient) -> None:
+def test_update_author_returns_404_for_missing_author(
+    client: TestClient,
+) -> None:
     response = client.patch('/api/v1/authors/404', json={'bio': 'Не важно'})
 
     assert response.status_code == 404
     assert response.json() == {'detail': 'Автор не найден'}
 
 
-def test_delete_author(client: TestClient, fake_session: FakeAuthorSession) -> None:
+def test_delete_author(
+    client: TestClient, fake_session: FakeAuthorSession
+) -> None:
     response = client.delete('/api/v1/authors/1')
 
     assert response.status_code == 204
@@ -166,7 +176,9 @@ def test_delete_author(client: TestClient, fake_session: FakeAuthorSession) -> N
     assert fake_session.commits == 1
 
 
-def test_delete_author_returns_404_for_missing_author(client: TestClient) -> None:
+def test_delete_author_returns_404_for_missing_author(
+    client: TestClient,
+) -> None:
     response = client.delete('/api/v1/authors/404')
 
     assert response.status_code == 404

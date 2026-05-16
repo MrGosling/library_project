@@ -2,7 +2,11 @@ import json
 
 from app.core.config import settings
 from app.integrations.ollama.client import OllamaClient
-from app.schemas.ai import RecommendationItem, RecommendationRequest, RecommendationResponse
+from app.schemas.ai import (
+    RecommendationItem,
+    RecommendationRequest,
+    RecommendationResponse,
+)
 
 
 class AIRecommendationService:
@@ -73,11 +77,15 @@ class AIRecommendationService:
 }}
 """
 
-    def _parse_recommendations(self, raw_response: str) -> list[RecommendationItem]:
+    def _parse_recommendations(
+        self, raw_response: str
+    ) -> list[RecommendationItem]:
         try:
             parsed = json.loads(raw_response)
         except json.JSONDecodeError as exc:
-            raise ValueError(f'Model returned invalid JSON: {raw_response}') from exc
+            raise ValueError(
+                f'Model returned invalid JSON: {raw_response}'
+            ) from exc
 
         if isinstance(parsed, list):
             items = parsed

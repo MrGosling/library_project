@@ -5,12 +5,21 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_async_session
 from app.core.security import hash_password, verify_password
 from app.models.user import User
-from app.schemas.user import UserCreate, UserLogin, UserRead, TokenResponse, ChangePassword, RefreshToken
+from app.schemas.user import (
+    UserCreate,
+    UserLogin,
+    UserRead,
+    TokenResponse,
+    ChangePassword,
+    RefreshToken,
+)
 
 router = APIRouter()
 
 
-@router.post('/register', response_model=UserRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    '/register', response_model=UserRead, status_code=status.HTTP_201_CREATED
+)
 async def register(
     user_in: UserCreate,
     session: AsyncSession = Depends(get_async_session),
@@ -18,11 +27,17 @@ async def register(
     """
     Регистрация нового пользователя.
     """
-    existing_username = await session.execute(select(User).where(User.username == user_in.username))
+    existing_username = await session.execute(
+        select(User).where(User.username == user_in.username)
+    )
     if existing_username.scalar_one_or_none() is not None:
-        raise HTTPException(status_code=400, detail='Username already registered')
+        raise HTTPException(
+            status_code=400, detail='Username already registered'
+        )
 
-    existing_email = await session.execute(select(User).where(User.email == user_in.email))
+    existing_email = await session.execute(
+        select(User).where(User.email == user_in.email)
+    )
     if existing_email.scalar_one_or_none() is not None:
         raise HTTPException(status_code=400, detail='Email already registered')
 
@@ -41,12 +56,16 @@ async def register(
     return user
 
 
-@router.post('/login', response_model=TokenResponse, summary='Вход пользователя')
+@router.post(
+    '/login', response_model=TokenResponse, summary='Вход пользователя'
+)
 async def login(
     user_in: UserLogin,
     session: AsyncSession = Depends(get_async_session),
 ) -> TokenResponse:
-    result = await session.execute(select(User).where(User.username == user_in.username))
+    result = await session.execute(
+        select(User).where(User.username == user_in.username)
+    )
     user = result.scalar_one_or_none()
     if user is None or not verify_password(user_in.password, user.password):
         raise HTTPException(
@@ -56,12 +75,16 @@ async def login(
     return TokenResponse(access_token=f'token_{user.id}')
 
 
-@router.post('/change-password', response_model=UserRead, summary='Смена пароля')
+@router.post(
+    '/change-password', response_model=UserRead, summary='Смена пароля'
+)
 async def change_password(
     data: ChangePassword,
     session: AsyncSession = Depends(get_async_session),
 ) -> User:
-    result = await session.execute(select(User).where(User.username == data.username))
+    result = await session.execute(
+        select(User).where(User.username == data.username)
+    )
     user = result.scalar_one_or_none()
     if user is None or not verify_password(data.old_password, user.password):
         raise HTTPException(
@@ -74,7 +97,9 @@ async def change_password(
     return user
 
 
-@router.post('/refresh-token', response_model=TokenResponse, summary='Обновление токена')
+@router.post(
+    '/refresh-token', response_model=TokenResponse, summary='Обновление токена'
+)
 async def refresh_token(
     data: RefreshToken,
     session: AsyncSession = Depends(get_async_session),

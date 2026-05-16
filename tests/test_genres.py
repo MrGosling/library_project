@@ -4,7 +4,9 @@ from httpx import AsyncClient
 
 @pytest.mark.asyncio
 async def test_create_genre(async_client: AsyncClient):
-    response = await async_client.post('/api/v1/genres/', json={'name': 'Фантастика'})
+    response = await async_client.post(
+        '/api/v1/genres/', json={'name': 'Фантастика'}
+    )
     assert response.status_code == 201
     assert response.json()['name'] == 'Фантастика'
 
@@ -24,15 +26,21 @@ async def test_get_genre_not_found(async_client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_update_genre_is_not_supported(async_client: AsyncClient):
-    create = await async_client.post('/api/v1/genres/', json={'name': 'Детектив'})
+    create = await async_client.post(
+        '/api/v1/genres/', json={'name': 'Детектив'}
+    )
     genre_id = create.json()['id']
-    response = await async_client.patch(f'/api/v1/genres/{genre_id}', json={'name': 'Детектив обновлён'})
+    response = await async_client.patch(
+        f'/api/v1/genres/{genre_id}', json={'name': 'Детектив обновлён'}
+    )
     assert response.status_code == 405
 
 
 @pytest.mark.asyncio
 async def test_delete_genre(async_client: AsyncClient):
-    create = await async_client.post('/api/v1/genres/', json={'name': 'Удаляемый'})
+    create = await async_client.post(
+        '/api/v1/genres/', json={'name': 'Удаляемый'}
+    )
     genre_id = create.json()['id']
     response = await async_client.delete(f'/api/v1/genres/{genre_id}')
     assert response.status_code == 204

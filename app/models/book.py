@@ -9,5 +9,7 @@ class Book(Base):
 
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     pub_year: Mapped[int] = mapped_column(nullable=False)
-    author_id: Mapped[int] = mapped_column(ForeignKey('authors.id'), nullable=False)
+    author_id: Mapped[int] = mapped_column(
+        ForeignKey('authors.id'), nullable=False
+    )
     description: Mapped[str | None] = mapped_column(String(200), nullable=True)

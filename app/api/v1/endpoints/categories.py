@@ -63,7 +63,9 @@ async def create_category(
     session: AsyncSession = Depends(get_async_session),
 ) -> CategoryRead:
     """Создать новую категорию с проверкой уникальности имени."""
-    existing = await session.execute(select(Category).where(Category.name == data.name))
+    existing = await session.execute(
+        select(Category).where(Category.name == data.name)
+    )
     if existing.scalar_one_or_none() is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,

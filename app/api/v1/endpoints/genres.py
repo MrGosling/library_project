@@ -63,7 +63,9 @@ async def create_genre(
     session: AsyncSession = Depends(get_async_session),
 ) -> GenreRead:
     """Создать новый жанр с проверкой уникальности имени."""
-    existing = await session.execute(select(Genre).where(Genre.name == data.name))
+    existing = await session.execute(
+        select(Genre).where(Genre.name == data.name)
+    )
     if existing.scalar_one_or_none() is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,

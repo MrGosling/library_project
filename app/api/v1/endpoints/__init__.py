@@ -11,11 +11,19 @@ from app.api.v1.endpoints.users import router as users_router
 
 endpoints_router = APIRouter()
 
-endpoints_router.include_router(authors_router, prefix='/authors', tags=['Authors'])
+endpoints_router.include_router(
+    authors_router, prefix='/authors', tags=['Authors']
+)
 endpoints_router.include_router(books_router, prefix='/books', tags=['Books'])
-endpoints_router.include_router(categories_router, prefix='/categories', tags=['Categories'])
-endpoints_router.include_router(genres_router, prefix='/genres', tags=['Genres'])
-endpoints_router.include_router(google_books_router, prefix='/google_books', tags=['Google Books'])
+endpoints_router.include_router(
+    categories_router, prefix='/categories', tags=['Categories']
+)
+endpoints_router.include_router(
+    genres_router, prefix='/genres', tags=['Genres']
+)
+endpoints_router.include_router(
+    google_books_router, prefix='/google_books', tags=['Google Books']
+)
 endpoints_router.include_router(health_router)
 endpoints_router.include_router(users_router, prefix='/users', tags=['Users'])
 endpoints_router.include_router(ai_router)

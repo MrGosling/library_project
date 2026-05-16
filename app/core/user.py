@@ -15,12 +15,16 @@ async def get_async_session_context() -> AsyncGenerator[AsyncSession, None]:
         yield session
 
 
-async def create_user(email: str, password: str, is_superuser: bool = False) -> None:
+async def create_user(
+    email: str, password: str, is_superuser: bool = False
+) -> None:
     async with get_async_session_context() as session:
         result = await session.execute(select(User).where(User.email == email))
         user = result.scalars().first()
         if user is None:
-            new_user = User(email=email, password=password, is_superuser=is_superuser)
+            new_user = User(
+                email=email, password=password, is_superuser=is_superuser
+            )
             session.add(new_user)
             await session.commit()
 

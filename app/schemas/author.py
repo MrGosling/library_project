@@ -34,7 +34,9 @@ class AuthorBase(BaseModel):
     bio: str | None = Field(
         default=None,
         max_length=5000,
-        examples=["Великий русский писатель, автор знаметиного романа 'Война и мир'."],
+        examples=[
+            "Великий русский писатель, автор знаметиного романа 'Война и мир'."
+        ],
     )
 
     @field_validator('full_name')

@@ -16,7 +16,9 @@ class GoogleBooksService:
             params['langRestrict'] = lang
 
         async with httpx.AsyncClient() as client:
-            response: httpx.Response = await client.get(self.base_url, params=params)
+            response: httpx.Response = await client.get(
+                self.base_url, params=params
+            )
             response.raise_for_status()
             return response.json()
 

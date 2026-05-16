@@ -51,7 +51,9 @@ async def create_author(
     response_model=list[AuthorRead],
 )
 async def get_authors(
-    search: str | None = Query(default=None, description='Поиск по ФИО автора'),
+    search: str | None = Query(
+        default=None, description='Поиск по ФИО автора'
+    ),
     limit: int = Query(default=20, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
     session: AsyncSession = Depends(get_async_session),
@@ -64,7 +66,11 @@ async def get_authors(
     if search:
         statement = statement.where(Author.full_name.ilike(f'%{search}%'))
 
-    statement = statement.order_by(Author.full_name).limit(limit=limit).offset(offset=offset)
+    statement = (
+        statement.order_by(Author.full_name)
+        .limit(limit=limit)
+        .offset(offset=offset)
+    )
 
     result = await session.execute(statement)
 
