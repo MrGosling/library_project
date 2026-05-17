@@ -4,10 +4,10 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.api.v1.endpoints.users import router as users_router
-from app.core.db import get_async_session
-from app.core.security import hash_password
-from app.models.user import User
+from backend.api.v1.endpoints.users import router as users_router
+from backend.core.db import get_async_session
+from backend.core.security import hash_password
+from backend.models.user import User
 
 
 class FakeScalarResult:

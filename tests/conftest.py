@@ -5,14 +5,14 @@ import httpx
 import pytest_asyncio
 from fastapi import FastAPI
 
-from app.api.v1.endpoints.books import router as books_router
-from app.api.v1.endpoints.categories import router as categories_router
-from app.api.v1.endpoints.genres import router as genres_router
-from app.core.db import get_async_session
-from app.models.author import Author
-from app.models.book import Book
-from app.models.category import Category
-from app.models.genre import Genre
+from backend.api.v1.endpoints.books import router as books_router
+from backend.api.v1.endpoints.categories import router as categories_router
+from backend.api.v1.endpoints.genres import router as genres_router
+from backend.core.db import get_async_session
+from backend.models.author import Author
+from backend.models.book import Book
+from backend.models.category import Category
+from backend.models.genre import Genre
 
 ModelT = TypeVar('ModelT', Author, Book, Category, Genre)
 

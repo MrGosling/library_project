@@ -2,9 +2,9 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.api.v1.endpoints.reviews import router as reviews_router
-from app.core.db import get_async_session
-from app.models.review import Review
+from backend.api.v1.endpoints.reviews import router as reviews_router
+from backend.core.db import get_async_session
+from backend.models.review import Review
 
 
 class FakeScalarResult:

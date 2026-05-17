@@ -5,10 +5,10 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
-from app.api.v1.endpoints.authors import router as authors_router
-from app.core.db import get_async_session
-from app.models.author import Author
-from app.schemas.author import AuthorCreate, AuthorUpdate
+from backend.api.v1.endpoints.authors import router as authors_router
+from backend.core.db import get_async_session
+from backend.models.author import Author
+from backend.schemas.author import AuthorCreate, AuthorUpdate
 
 
 class FakeScalarResult:
