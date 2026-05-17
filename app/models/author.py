@@ -1,17 +1,19 @@
 from datetime import datetime
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import DateTime, Integer, String, Text, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.db import Base
+
+if TYPE_CHECKING:
+    from app.models.book import Book
 
 
 class Author(Base):
     """
     Автор sqlalchemy-модель
     """
-
-    __tablename__ = 'authors'
 
     # полное имя
     full_name: Mapped[str] = mapped_column(
@@ -46,3 +48,6 @@ class Author(Base):
         onupdate=func.now(),
         nullable=False,
     )
+
+    # Relationships
+    books: Mapped[List["Book"]] = relationship(back_populates="author", cascade="all, delete-orphan")

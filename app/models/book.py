@@ -1,7 +1,29 @@
-from sqlalchemy import ForeignKey, String
-from sqlalchemy.orm import Mapped, mapped_column
+from typing import TYPE_CHECKING, List
+
+from sqlalchemy import Column, ForeignKey, Integer, String, Table
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.db import Base
+
+if TYPE_CHECKING:
+    from app.models.author import Author
+    from app.models.category import Category
+    from app.models.genre import Genre
+
+
+book_genre = Table(
+    "book_genre",
+    Base.metadata,
+    Column("book_id", ForeignKey("book.id", ondelete="CASCADE"), primary_key=True),
+    Column("genre_id", ForeignKey("genre.id", ondelete="CASCADE"), primary_key=True),
+)
+
+book_category = Table(
+    "book_category",
+    Base.metadata,
+    Column("book_id", ForeignKey("book.id", ondelete="CASCADE"), primary_key=True),
+    Column("category_id", ForeignKey("category.id", ondelete="CASCADE"), primary_key=True),
+)
 
 
 class Book(Base):
@@ -10,6 +32,15 @@ class Book(Base):
     title: Mapped[str] = mapped_column(String(200), nullable=False)
     pub_year: Mapped[int] = mapped_column(nullable=False)
     author_id: Mapped[int] = mapped_column(
-        ForeignKey('authors.id'), nullable=False
+        ForeignKey('author.id', ondelete="CASCADE"), nullable=False
     )
     description: Mapped[str | None] = mapped_column(String(200), nullable=True)
+
+    # Relationships
+    author: Mapped["Author"] = relationship(back_populates="books")
+    genres: Mapped[List["Genre"]] = relationship(
+        secondary=book_genre, back_populates="books"
+    )
+    categories: Mapped[List["Category"]] = relationship(
+        secondary=book_category, back_populates="books"
+    )

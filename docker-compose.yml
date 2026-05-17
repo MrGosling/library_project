@@ -30,7 +30,9 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app/app       
+      - ./app:/app/app
+      - ./alembic:/app/alembic
+      - ./alembic.ini:/app/alembic.ini
     depends_on:
       db:
         condition: service_healthy
