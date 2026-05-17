@@ -23,14 +23,16 @@ services:
       timeout: 5s
       retries: 5
 
-  app:
+  backend:
     build: .
-    container_name: library_app
+    container_name: library_backend
     env_file: .env
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app/app       
+      - ./backend:/app/backend
+      - ./alembic:/app/alembic
+      - ./alembic.ini:/app/alembic.ini
     depends_on:
       db:
         condition: service_healthy

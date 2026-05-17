@@ -18,7 +18,9 @@ ModelT = TypeVar('ModelT', Author, Book, Category, Genre)
 
 
 class FakeScalarResult:
-    def __init__(self, items: list[Author] | list[Book] | list[Category] | list[Genre]) -> None:
+    def __init__(
+        self, items: list[Author] | list[Book] | list[Category] | list[Genre]
+    ) -> None:
         self.items = items
 
     def all(self) -> list[Author] | list[Book] | list[Category] | list[Genre]:
@@ -26,7 +28,9 @@ class FakeScalarResult:
 
 
 class FakeResult:
-    def __init__(self, items: list[Author] | list[Book] | list[Category] | list[Genre]) -> None:
+    def __init__(
+        self, items: list[Author] | list[Book] | list[Category] | list[Genre]
+    ) -> None:
         self.items = items
 
     def scalars(self) -> FakeScalarResult:
@@ -44,7 +48,9 @@ class FakeLibrarySession:
         self.books: list[Book] = []
         self.categories: list[Category] = []
         self.genres: list[Genre] = []
-        self._next_ids: dict[type[Author] | type[Book] | type[Category] | type[Genre], int] = {
+        self._next_ids: dict[
+            type[Author] | type[Book] | type[Category] | type[Genre], int
+        ] = {
             Author: 2,
             Book: 1,
             Category: 1,
@@ -62,7 +68,10 @@ class FakeLibrarySession:
         return FakeResult(items)
 
     async def get(self, model: type[ModelT], item_id: int) -> ModelT | None:
-        return next((item for item in self._items_for(model) if item.id == item_id), None)
+        return next(
+            (item for item in self._items_for(model) if item.id == item_id),
+            None,
+        )
 
     def add(self, item: Author | Book | Category | Genre) -> None:
         model = type(item)
@@ -106,11 +115,15 @@ async def async_client() -> AsyncIterator[httpx.AsyncClient]:
 
     fake_session = FakeLibrarySession()
 
-    async def override_get_async_session() -> AsyncIterator[FakeLibrarySession]:
+    async def override_get_async_session() -> AsyncIterator[
+        FakeLibrarySession
+    ]:
         yield fake_session
 
     app.dependency_overrides[get_async_session] = override_get_async_session
 
     transport = httpx.ASGITransport(app=app)
-    async with httpx.AsyncClient(transport=transport, base_url='http://test') as client:
+    async with httpx.AsyncClient(
+        transport=transport, base_url='http://test'
+    ) as client:
         yield client
