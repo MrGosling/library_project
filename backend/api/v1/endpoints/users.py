@@ -49,6 +49,7 @@ async def register(
         password=hash_password(user_in.password),
         role='reader',
         is_active=True,
+        is_superuser=False,
     )
     session.add(user)
     await session.commit()
