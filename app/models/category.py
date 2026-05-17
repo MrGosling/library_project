@@ -13,6 +13,6 @@ class Category(Base):
     description: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     # Relationships
-    books: Mapped[List["Book"]] = relationship(
-        secondary="book_category", back_populates="categories"
+    books: Mapped[List['Book']] = relationship(
+        secondary='book_category', back_populates='categories'
     )

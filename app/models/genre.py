@@ -12,6 +12,6 @@ class Genre(Base):
     name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)
 
     # Relationships
-    books: Mapped[List["Book"]] = relationship(
-        secondary="book_genre", back_populates="genres"
+    books: Mapped[List['Book']] = relationship(
+        secondary='book_genre', back_populates='genres'
     )

@@ -10,14 +10,16 @@ if TYPE_CHECKING:
 
 
 class Favorite(Base):
-    user_id: Mapped[int] = mapped_column(ForeignKey('user.id', ondelete="CASCADE"), nullable=False)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey('user.id', ondelete='CASCADE'), nullable=False
+    )
     book_id: Mapped[int] = mapped_column(
-        ForeignKey('book.id', ondelete="CASCADE"), nullable=False
+        ForeignKey('book.id', ondelete='CASCADE'), nullable=False
     )
     is_read: Mapped[bool] = mapped_column(
         Boolean, default=False, nullable=False
     )
 
     # Relationships
-    user: Mapped["User"] = relationship()
-    book: Mapped["Book"] = relationship()
+    user: Mapped['User'] = relationship()
+    book: Mapped['Book'] = relationship()

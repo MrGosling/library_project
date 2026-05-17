@@ -51,9 +51,9 @@ async def create_first_superuser() -> None:
 
 
 async def create_initial_users() -> None:
-    print("Creating initial superuser...")
+    print('Creating initial superuser...')
     await create_first_superuser()
-    print("Creating initial user...")
+    print('Creating initial user...')
     await create_user(
         username='user',
         email='user@example.com',

@@ -50,4 +50,6 @@ class Author(Base):
     )
 
     # Relationships
-    books: Mapped[List["Book"]] = relationship(back_populates="author", cascade="all, delete-orphan")
+    books: Mapped[List['Book']] = relationship(
+        back_populates='author', cascade='all, delete-orphan'
+    )
