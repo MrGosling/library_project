@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.db import get_async_session
 from backend.models.author import Author
-from backend.models.book import Book
+from backend.models.book import Book, book_category
 from backend.schemas.book import BookCreate, BookRead
 
 router = APIRouter()
@@ -57,10 +57,28 @@ async def create_book(
     summary='Список книг',
 )
 async def get_books(
+    search: str | None = Query(default=None, description='Поиск по названию книги'),
+    author_id: int | None = Query(default=None, description='Фильтр по автору'),
+    category_id: int | None = Query(default=None, description='Фильтр по категории'),
+    pub_year: int | None = Query(default=None, description='Фильтр по году издания'),
+    limit: int = Query(default=20, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
     session: AsyncSession = Depends(get_async_session),
 ) -> list[Book]:
-    """Вернуть список всех книг."""
     statement = select(Book)
+
+    if search:
+        statement = statement.where(Book.title.ilike(f'%{search}%'))
+    if author_id is not None:
+        statement = statement.where(Book.author_id == author_id)
+    if pub_year is not None:
+        statement = statement.where(Book.pub_year == pub_year)
+    if category_id is not None:
+        statement = statement.join(book_category, Book.id == book_category.c.book_id).where(
+            book_category.c.category_id == category_id
+        )
+
+    statement = statement.limit(limit).offset(offset)
     result = await session.execute(statement)
     return list(result.scalars().all())
 
