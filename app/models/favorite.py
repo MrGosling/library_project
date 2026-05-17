@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from sqlalchemy import Boolean, ForeignKey
+from sqlalchemy import Boolean, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.db import Base
@@ -20,6 +20,12 @@ class Favorite(Base):
         Boolean, default=False, nullable=False
     )
 
+    __table_args__ = (
+        UniqueConstraint(
+            'user_id', 'book_id', name='unique_user_book_favorite'
+        ),
+    )
+
     # Relationships
-    user: Mapped['User'] = relationship()
-    book: Mapped['Book'] = relationship()
+    user: Mapped['User'] = relationship(passive_deletes=True)
+    book: Mapped['Book'] = relationship(passive_deletes=True)

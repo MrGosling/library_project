@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, List
 
-from sqlalchemy import Column, ForeignKey, Integer, String, Table
+from sqlalchemy import Column, ForeignKey, String, Table, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.db import Base
@@ -46,7 +46,7 @@ class Book(Base):
     author_id: Mapped[int] = mapped_column(
         ForeignKey('author.id', ondelete='CASCADE'), nullable=False
     )
-    description: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     # Relationships
     author: Mapped['Author'] = relationship(back_populates='books')

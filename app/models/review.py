@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING
-from sqlalchemy import ForeignKey, Integer, Text
+from sqlalchemy import ForeignKey, Integer, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.db import Base
@@ -19,6 +19,10 @@ class Review(Base):
         ForeignKey('user.id', ondelete='CASCADE'), nullable=False
     )
 
+    __table_args__ = (
+        UniqueConstraint('user_id', 'book_id', name='unique_user_book_review'),
+    )
+
     # Relationships
-    book: Mapped['Book'] = relationship()
-    user: Mapped['User'] = relationship()
+    book: Mapped['Book'] = relationship(passive_deletes=True)
+    user: Mapped['User'] = relationship(passive_deletes=True)

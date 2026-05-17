@@ -9,14 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 
 from alembic import context
 
-from app.core.db import Base
-from app.models.author import Author
-from app.models.user import User
-from app.models.genre import Genre
-from app.models.category import Category
-from app.models.review import Review
-from app.models.favorite import Favorite
-from app.models.book import Book
+from app.models import Base
 
 load_dotenv('.env')
 
