@@ -1,5 +1,5 @@
 [tool.ruff]
-line-length = 120
+line-length = 79
 target-version = "py310"
 exclude = [
     ".git",
@@ -24,3 +24,8 @@ line-ending = "auto"
 select = ["E", "F", "I"]
 fixable = ["ALL"]
 unfixable = []
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+asyncio_mode = "auto"
+testpaths = ["tests"]

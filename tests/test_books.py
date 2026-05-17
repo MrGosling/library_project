@@ -20,7 +20,9 @@ async def test_create_book(async_client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_create_book_returns_404_for_missing_author(async_client: AsyncClient) -> None:
+async def test_create_book_returns_404_for_missing_author(
+    async_client: AsyncClient,
+) -> None:
     response = await async_client.post(
         '/api/v1/books',
         json={
@@ -36,18 +38,30 @@ async def test_create_book_returns_404_for_missing_author(async_client: AsyncCli
 
 @pytest.mark.asyncio
 async def test_get_books(async_client: AsyncClient) -> None:
-    await async_client.post('/api/v1/books', json={'title': 'Книга 1', 'pub_year': 2001, 'author_id': 1})
-    await async_client.post('/api/v1/books', json={'title': 'Книга 2', 'pub_year': 2002, 'author_id': 1})
+    await async_client.post(
+        '/api/v1/books',
+        json={'title': 'Книга 1', 'pub_year': 2001, 'author_id': 1},
+    )
+    await async_client.post(
+        '/api/v1/books',
+        json={'title': 'Книга 2', 'pub_year': 2002, 'author_id': 1},
+    )
 
     response = await async_client.get('/api/v1/books')
 
     assert response.status_code == 200
-    assert [book['title'] for book in response.json()] == ['Книга 1', 'Книга 2']
+    assert [book['title'] for book in response.json()] == [
+        'Книга 1',
+        'Книга 2',
+    ]
 
 
 @pytest.mark.asyncio
 async def test_get_book_by_id(async_client: AsyncClient) -> None:
-    create = await async_client.post('/api/v1/books', json={'title': 'Идиот', 'pub_year': 1869, 'author_id': 1})
+    create = await async_client.post(
+        '/api/v1/books',
+        json={'title': 'Идиот', 'pub_year': 1869, 'author_id': 1},
+    )
     book_id = create.json()['id']
 
     response = await async_client.get(f'/api/v1/books/{book_id}')
@@ -58,7 +72,9 @@ async def test_get_book_by_id(async_client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
-async def test_get_book_returns_404_for_missing_book(async_client: AsyncClient) -> None:
+async def test_get_book_returns_404_for_missing_book(
+    async_client: AsyncClient,
+) -> None:
     response = await async_client.get('/api/v1/books/999')
 
     assert response.status_code == 404
