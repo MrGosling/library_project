@@ -24,3 +24,8 @@ line-ending = "auto"
 select = ["E", "F", "I"]
 fixable = ["ALL"]
 unfixable = []
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+asyncio_mode = "auto"
+testpaths = ["tests"]
