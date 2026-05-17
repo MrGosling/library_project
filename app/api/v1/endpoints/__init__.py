@@ -8,6 +8,8 @@ from app.api.v1.endpoints.genres import router as genres_router
 from app.api.v1.endpoints.google_books import router as google_books_router
 from app.api.v1.endpoints.health import router as health_router
 from app.api.v1.endpoints.users import router as users_router
+from app.api.v1.endpoints.reviews import router as reviews_router
+from app.api.v1.endpoints.favorites import router as favorites_router
 
 endpoints_router = APIRouter()
 
@@ -19,3 +21,5 @@ endpoints_router.include_router(google_books_router, prefix='/google_books', tag
 endpoints_router.include_router(health_router)
 endpoints_router.include_router(users_router, prefix='/users', tags=['Users'])
 endpoints_router.include_router(ai_router)
+endpoints_router.include_router(reviews_router, prefix='/reviews', tags=['Reviews'])
+endpoints_router.include_router(favorites_router, prefix='/favorites', tags=['Favorites'])
