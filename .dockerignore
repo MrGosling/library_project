@@ -1,0 +1,23 @@
+# Виртуальные окружения и зависимости
+.venv
+venv
+**/node_modules
+
+# Артефакты сборки фронтенда
+frontend/dist
+
+# Системы контроля версий и кэши
+.git
+.gitignore
+.ruff_cache
+**/__pycache__
+*.pyc
+
+# Локальные секреты и логи
+.env
+*.log
+.DS_Store
+
+# IDE
+.vscode
+.kilo

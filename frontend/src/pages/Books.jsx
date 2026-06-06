@@ -58,7 +58,6 @@ function Books() {
   }, [loadBooks]);
 
   useEffect(() => {
-    // Загружаем справочники для фильтров один раз.
     getAuthors({ limit: 100 })
       .then(setAuthors)
       .catch(() => setAuthors([]));

@@ -20,7 +20,6 @@ function Favorites() {
     try {
       const favorites = await getFavorites();
       const mine = favorites.filter((fav) => fav.user_id === userId);
-      // Подгружаем данные книг для каждого избранного.
       const withBooks = await Promise.all(
         mine.map(async (fav) => {
           try {

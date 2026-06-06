@@ -1,16 +1,13 @@
 /* eslint-env serviceworker */
 /* global self, caches, fetch */
 
-// Версия кэша. Меняйте при обновлении логики кэширования.
 const CACHE_VERSION = 'v1';
 const STATIC_CACHE = `library-static-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `library-runtime-${CACHE_VERSION}`;
 const API_CACHE = `library-api-${CACHE_VERSION}`;
 
-// Базовые ресурсы для оболочки приложения (app shell).
 const PRECACHE_URLS = ['/', '/index.html', '/manifest.webmanifest', '/favicon.svg'];
 
-// Установка: предварительное кэширование оболочки приложения.
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
@@ -20,7 +17,6 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Активация: удаляем устаревшие версии кэша.
 self.addEventListener('activate', (event) => {
   const allowed = [STATIC_CACHE, RUNTIME_CACHE, API_CACHE];
   event.waitUntil(
@@ -35,7 +31,6 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Стратегия "сначала сеть, потом кэш" для GET-запросов к API.
 async function networkFirst(request, cacheName) {
   const cache = await caches.open(cacheName);
   try {
@@ -51,7 +46,6 @@ async function networkFirst(request, cacheName) {
   }
 }
 
-// Стратегия "сначала кэш, потом сеть" для статики.
 async function cacheFirst(request, cacheName) {
   const cache = await caches.open(cacheName);
   const cached = await cache.match(request);
@@ -66,18 +60,15 @@ async function cacheFirst(request, cacheName) {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
-  // Кэшируем только GET-запросы.
   if (request.method !== 'GET') return;
 
   const url = new URL(request.url);
 
-  // Запросы к API: network-first с офлайн-фолбэком из кэша.
   if (url.pathname.startsWith('/api/')) {
     event.respondWith(networkFirst(request, API_CACHE));
     return;
   }
 
-  // Навигационные запросы (SPA): отдаём index.html из кэша при офлайне.
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request).catch(() =>
@@ -87,7 +78,6 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Остальная статика: cache-first.
   if (url.origin === self.location.origin) {
     event.respondWith(cacheFirst(request, RUNTIME_CACHE));
   }
