@@ -21,11 +21,12 @@ cp .env.example .env
 
 3. Проект разделён на два compose-файла:
 
-- `docker-compose.dev.yml` — разработка (live-reload backend, открытые порты
-  db и backend, gateway на :3000);
+- `docker-compose.dev.yml` — разработка (live-reload backend через `uvicorn
+  --reload`, отдельный сервис фронтенда с Vite dev-сервером и HMR на :5173,
+  gateway на :3000, открытые порты db и backend);
 - `docker-compose.prod.yml` — продакшен (без reload, несколько воркеров,
-  наружу открыт только gateway на :80, db и backend во внутренней сети,
-  restart-политики и healthcheck).
+  статика фронтенда собрана в образ gateway, наружу открыт только gateway
+  на :80, db и backend во внутренней сети, restart-политики и healthcheck).
 
 4. Первый запуск (с загрузкой AI-модели). Подставьте нужный compose-файл
    через флаг `-f` (примеры ниже для разработки):
@@ -46,8 +47,9 @@ docker compose -f docker-compose.prod.yml up -d --build
 При запуске автоматически применяются миграции и выполняется инициализация базы данных (создание суперпользователя и начальных данных).
 
 В режиме разработки:
+- Фронтенд с HMR (Vite): http://localhost:5173 — используйте для разработки фронта
+- Приложение (через gateway, prod-сборка статики): http://localhost:3000
 - API: http://localhost:8000, Swagger: http://localhost:8000/docs
-- Приложение (через gateway): http://localhost:3000
 
 В режиме продакшена:
 - Приложение и API (через gateway): http://localhost (порт 80)
@@ -66,6 +68,10 @@ docker compose -f docker-compose.prod.yml up -d --build
 `backend`. Образ gateway собирается из корня проекта (`gateway/Dockerfile`):
 на этапе сборки собирается фронтенд из `frontend/`, затем статика копируется
 в nginx.
+
+Список разрешённых для CORS источников задаётся переменной `CORS_ORIGINS_STR`
+в `.env` (значения через запятую). По умолчанию включает `http://localhost:5173`,
+`http://localhost:3000` и `http://localhost`.
 
 Страницы:
 - `/` — главная (информация о приложении);
