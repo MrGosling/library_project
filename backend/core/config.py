@@ -24,6 +24,16 @@ class Settings(BaseSettings):
     ollama_model: str = 'OLLAMA_MODEL'
     ollama_timeout: int = 'OLLAMA_TIMEOUT'
 
+    cors_origins_str: str = 'CORS_ORIGINS_STR'
+
+    @property
+    def cors_origins(self) -> list[str]:
+        return [
+            origin.strip()
+            for origin in self.cors_origins_str.split(',')
+            if origin.strip()
+        ]
+
     model_config: SettingsConfigDict = {
         'env_file': '.env',
         'env_file_encoding': 'utf-8',
