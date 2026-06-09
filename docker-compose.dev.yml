@@ -1,0 +1,80 @@
+# Compose для РАЗРАБОТКИ.
+# Запуск: docker compose -f docker-compose.dev.yml up -d --build
+#
+# Особенности dev-режима:
+#   - код backend монтируется томом + uvicorn --reload (live-reload);
+#   - фронтенд запускается через Vite dev-сервер (:5173) с HMR — изменения
+#     в ./frontend подхватываются автоматически, без пересборки;
+#   - порты db, backend и frontend открыты наружу для отладки;
+#   - gateway также доступен на :3000 (раздаёт собранную статику; для live-
+#     разработки фронта используйте :5173).
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: library_ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: ${POSTGRES_HOST}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres16_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    container_name: library_backend
+    env_file: .env
+    environment:
+      UVICORN_RELOAD: "true"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app/backend
+      - ./alembic:/app/alembic
+      - ./alembic.ini:/app/alembic.ini
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    image: node:20-alpine
+    container_name: library_frontend_dev
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    environment:
+      VITE_PROXY_TARGET: "http://backend:8000"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    container_name: library_gateway
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres16_data:
+  ollama_data:

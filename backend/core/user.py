@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.config import settings
 from backend.core.db import AsyncSessionLocal
+from backend.core.security import hash_password
 from backend.models.user import User, UserRole
 
 
@@ -29,7 +30,7 @@ async def create_user(
             new_user = User(
                 username=username,
                 email=email,
-                password=password,
+                password=hash_password(password),
                 role=role,
                 is_superuser=is_superuser,
             )
