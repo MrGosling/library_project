@@ -10,7 +10,7 @@ import {
 import { AUTH_LOGOUT_EVENT, TOKEN_KEY } from '../api.js';
 import * as authService from '../services/auth.js';
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 // Извлекаем ID пользователя из токена формата "token_{id}".
 function parseUserId(token) {
