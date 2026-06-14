@@ -21,7 +21,7 @@ cp .env.example .env
 
 3. Проект разделён на три compose-файла:
 
-- `docker-compose.yml` — базовый (только backend, база данных и Ollama, без фронтенда и gateway);
+- `docker-compose.yml` — базовый;
 - `docker-compose.dev.yml` — разработка (live-reload backend через `uvicorn
   --reload`, отдельный сервис фронтенда с Vite dev-сервером и HMR на :5173,
   gateway на :3000, открытые порты db и backend);
