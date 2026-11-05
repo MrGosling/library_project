@@ -120,6 +120,21 @@ def test_create_favorite_with_is_read(client: TestClient, fake_session: FakeFavo
     assert response.json()['is_read'] is True
 
 
+def test_mark_favorite_as_read(client: TestClient, fake_session: FakeFavoriteSession) -> None:
+    response = client.patch('/api/v1/favorites/1', json={'is_read': True})
+
+    assert response.status_code == 200
+    assert response.json()['is_read'] is True
+    assert fake_session.favorites[0].is_read is True
+
+
+def test_mark_favorite_returns_404_for_missing_favorite(client: TestClient) -> None:
+    response = client.patch('/api/v1/favorites/999', json={'is_read': True})
+
+    assert response.status_code == 404
+    assert response.json() == {'detail': 'Favorite not found'}
+
+
 def test_delete_favorite(client: TestClient, fake_session: FakeFavoriteSession) -> None:
     response = client.delete('/api/v1/favorites/1')
 
