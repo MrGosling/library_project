@@ -16,6 +16,15 @@ class BookCreate(BookBase):
     pass
 
 
+class BookUpdate(BaseModel):
+    """Схема частичного обновления книги."""
+
+    title: str | None = None
+    pub_year: int | None = None
+    author_id: int | None = None
+    description: str | None = None
+
+
 class BookRead(BookBase):
     """Схема чтения книги."""
 

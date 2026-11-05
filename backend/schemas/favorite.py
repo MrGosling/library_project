@@ -11,6 +11,10 @@ class FavoriteCreate(FavoriteBase):
     pass
 
 
+class FavoriteUpdate(BaseModel):
+    is_read: bool
+
+
 class FavoriteRead(FavoriteBase):
     model_config = ConfigDict(from_attributes=True)
 
