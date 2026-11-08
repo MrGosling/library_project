@@ -47,6 +47,38 @@ async def test_create_author(async_client: AsyncClient) -> None:
 
 
 @pytest.mark.asyncio
+async def test_replace_author(async_client: AsyncClient) -> None:
+    response = await async_client.put(
+        '/api/v1/authors/1',
+        json={'full_name': 'Федор Достоевский', 'birth_year': 1821},
+    )
+
+    assert response.status_code == 200
+    assert response.json()['full_name'] == 'Федор Достоевский'
+    assert response.json()['birth_year'] == 1821
+    assert response.json()['bio'] is None
+
+
+@pytest.mark.asyncio
+async def test_replace_author_requires_full_name(async_client: AsyncClient) -> None:
+    response = await async_client.put(
+        '/api/v1/authors/1', json={'birth_year': 1821}
+    )
+
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_replace_author_returns_404_for_missing_author(async_client: AsyncClient) -> None:
+    response = await async_client.put(
+        '/api/v1/authors/404', json={'full_name': 'Нет такого'}
+    )
+
+    assert response.status_code == 404
+    assert response.json() == {'detail': 'Автор не найден'}
+
+
+@pytest.mark.asyncio
 async def test_update_author_accepts_partial_payload(async_client: AsyncClient) -> None:
     response = await async_client.patch(
         '/api/v1/authors/1', json={'bio': 'Обновленная биография'}

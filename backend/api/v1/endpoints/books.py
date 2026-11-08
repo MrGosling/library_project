@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.core.db import get_async_session
 from backend.models.author import Author
 from backend.models.book import Book, book_category
-from backend.schemas.book import BookCreate, BookRead
+from backend.schemas.book import BookCreate, BookRead, BookUpdate
 
 router = APIRouter()
 
@@ -95,6 +95,55 @@ async def get_book(
     """Вернуть книгу по ID."""
     book = await session.get(Book, book_id)
     return book_or_404(book)
+
+
+@router.put(
+    '/{book_id}',
+    response_model=BookRead,
+    summary='Полностью обновить книгу',
+)
+async def replace_book(
+    book_id: int,
+    book_data: BookCreate,
+    session: AsyncSession = Depends(get_async_session),
+) -> Book:
+    """Заменить все поля книги с проверкой существования автора."""
+    book = await session.get(Book, book_id)
+    book = book_or_404(book)
+    await check_author_exists(book_data.author_id, session)
+
+    for field, value in book_data.model_dump().items():
+        setattr(book, field, value)
+
+    await session.commit()
+    await session.refresh(book)
+    return book
+
+
+@router.patch(
+    '/{book_id}',
+    response_model=BookRead,
+    summary='Частично обновить книгу',
+)
+async def update_book(
+    book_id: int,
+    book_data: BookUpdate,
+    session: AsyncSession = Depends(get_async_session),
+) -> Book:
+    """Обновить только переданные поля книги."""
+    book = await session.get(Book, book_id)
+    book = book_or_404(book)
+
+    update_data = book_data.model_dump(exclude_unset=True)
+    if update_data.get('author_id') is not None:
+        await check_author_exists(update_data['author_id'], session)
+
+    for field, value in update_data.items():
+        setattr(book, field, value)
+
+    await session.commit()
+    await session.refresh(book)
+    return book
 
 
 @router.delete(

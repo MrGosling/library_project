@@ -82,6 +82,108 @@ async def test_get_book_returns_404_for_missing_book(
 
 
 @pytest.mark.asyncio
+async def test_replace_book(async_client: AsyncClient) -> None:
+    create = await async_client.post(
+        '/api/v1/books',
+        json={
+            'title': 'Черновик',
+            'pub_year': 2000,
+            'author_id': 1,
+            'description': 'Старое описание',
+        },
+    )
+    book_id = create.json()['id']
+
+    response = await async_client.put(
+        f'/api/v1/books/{book_id}',
+        json={'title': 'Анна Каренина', 'pub_year': 1877, 'author_id': 1},
+    )
+
+    assert response.status_code == 200
+    assert response.json()['title'] == 'Анна Каренина'
+    assert response.json()['pub_year'] == 1877
+    assert response.json()['description'] is None
+
+
+@pytest.mark.asyncio
+async def test_replace_book_requires_all_fields(
+    async_client: AsyncClient,
+) -> None:
+    create = await async_client.post(
+        '/api/v1/books',
+        json={'title': 'Книга', 'pub_year': 2000, 'author_id': 1},
+    )
+    book_id = create.json()['id']
+
+    response = await async_client.put(
+        f'/api/v1/books/{book_id}', json={'title': 'Только название'}
+    )
+
+    assert response.status_code == 422
+
+
+@pytest.mark.asyncio
+async def test_replace_book_returns_404_for_missing_book(
+    async_client: AsyncClient,
+) -> None:
+    response = await async_client.put(
+        '/api/v1/books/999',
+        json={'title': 'Нет такой', 'pub_year': 2000, 'author_id': 1},
+    )
+
+    assert response.status_code == 404
+    assert response.json() == {'detail': 'Книга не найдена'}
+
+
+@pytest.mark.asyncio
+async def test_update_book_accepts_partial_payload(
+    async_client: AsyncClient,
+) -> None:
+    create = await async_client.post(
+        '/api/v1/books',
+        json={'title': 'Бесы', 'pub_year': 1800, 'author_id': 1},
+    )
+    book_id = create.json()['id']
+
+    response = await async_client.patch(
+        f'/api/v1/books/{book_id}', json={'pub_year': 1872}
+    )
+
+    assert response.status_code == 200
+    assert response.json()['pub_year'] == 1872
+    assert response.json()['title'] == 'Бесы'
+
+
+@pytest.mark.asyncio
+async def test_update_book_returns_404_for_missing_author(
+    async_client: AsyncClient,
+) -> None:
+    create = await async_client.post(
+        '/api/v1/books',
+        json={'title': 'Книга', 'pub_year': 2000, 'author_id': 1},
+    )
+    book_id = create.json()['id']
+
+    response = await async_client.patch(
+        f'/api/v1/books/{book_id}', json={'author_id': 999}
+    )
+
+    assert response.status_code == 404
+    assert response.json() == {'detail': 'Автор не найден'}
+
+
+@pytest.mark.asyncio
+async def test_update_book_returns_404_for_missing_book(
+    async_client: AsyncClient,
+) -> None:
+    response = await async_client.patch(
+        '/api/v1/books/999', json={'pub_year': 2000}
+    )
+
+    assert response.status_code == 404
+
+
+@pytest.mark.asyncio
 async def test_delete_book(async_client: AsyncClient) -> None:
     create = await async_client.post(
         '/api/v1/books',

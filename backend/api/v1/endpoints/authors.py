@@ -94,6 +94,31 @@ async def get_author(
     return author_or_404(author)
 
 
+# Полностью обновить автора
+@router.put(
+    '/{author_id}',
+    response_model=AuthorRead,
+)
+async def replace_author(
+    author_id: int,
+    author_data: AuthorCreate,
+    session: AsyncSession = Depends(get_async_session),
+) -> Author:
+    """
+    Заменяет все поля автора.
+    """
+    author = await session.get(Author, author_id)
+    author = author_or_404(author)
+
+    for field, value in author_data.model_dump().items():
+        setattr(author, field, value)
+
+    await session.commit()
+    await session.refresh(author)
+
+    return author
+
+
 # Обновить информацию у автора
 @router.patch(
     '/{author_id}',

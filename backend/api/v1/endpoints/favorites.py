@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.db import get_async_session
 from backend.models.favorite import Favorite
-from backend.schemas.favorite import FavoriteCreate, FavoriteRead
+from backend.schemas.favorite import FavoriteCreate, FavoriteRead, FavoriteUpdate
 
 router = APIRouter()
 
@@ -34,6 +34,15 @@ async def get_favorite(favorite_id: int, session: AsyncSession = Depends(get_asy
 async def create_favorite(data: FavoriteCreate, session: AsyncSession = Depends(get_async_session)) -> FavoriteRead:
     favorite = Favorite(**data.model_dump())
     session.add(favorite)
+    await session.commit()
+    await session.refresh(favorite)
+    return favorite
+
+
+@router.patch('/{favorite_id}', response_model=FavoriteRead, summary='Отметить прочитанное')
+async def update_favorite(favorite_id: int, data: FavoriteUpdate, session: AsyncSession = Depends(get_async_session)) -> FavoriteRead:
+    favorite = await get_favorite_or_404(favorite_id, session)
+    favorite.is_read = data.is_read
     await session.commit()
     await session.refresh(favorite)
     return favorite
